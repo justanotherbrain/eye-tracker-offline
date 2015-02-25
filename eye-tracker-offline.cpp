@@ -79,7 +79,8 @@ int main()
 
 	double fps = cap.get(CV_CAP_PROP_FPS);
 	int dp = 1;
-	int min_dist = sqrt( pow(tmp.rows,2) + pow(tmp.cols,2));
+	//int min_dist = sqrt( pow(tmp.rows,2) + pow(tmp.cols,2));
+	int min_dist = 1;
 	int canny_threshold = 10;
 	int center_threshold = 10;
 	int min_radius = 75;
@@ -138,18 +139,27 @@ int main()
 		HoughCircles( image_gray, circles, CV_HOUGH_GRADIENT, dp, min_dist, canny_threshold, center_threshold, min_radius, max_radius);
 		
 		//Draw circles detected
-		//for( size_t i=0; i< circles.size(); i++)
-		//{
-		float centerX=circles[0][0]+offset[0];
-		float centerY=circles[0][1]+offset[1];	
-		//Point center(cvRound(add(circles[0][0],offset[0])), cvRound(add(circles[0][1],offset[1])));
+		float x=0;
+		float y=0;
+		float r=0;
+		for( size_t i=0; i< circles.size(); i++)
+		{
+			x=x+circles[i][0];
+			y=y+circles[i][1];
+			r=r+circles[i][2];
+		}
+		float centerX=x/circles.size()+offset[0];
+		float centerY=y/circles.size()+offset[1];
+		//float centerX=circles[0][0]+offset[0];
+		//float centerY=circles[0][1]+offset[1];	
+		
 		Point center(cvRound(centerX), cvRound(centerY));
-		int radius = cvRound(circles[0][2]);
+		//int radius = cvRound(circles[0][2]);
+		int radius = cvRound(r/circles.size());
 		// circle center
 		circle(image,center,3,Scalar(0,255,0),-1,8,0);
 		// circle outline
 		circle(image,center,radius,Scalar(0,0,255),3,8,0);
-		
 		
 		demo.write(image);
 		
