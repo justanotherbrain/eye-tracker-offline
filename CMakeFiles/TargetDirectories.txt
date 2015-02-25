@@ -1,1 +1,1 @@
-/home/bijanadmin/development/eye-tracker-offline/CMakeFiles/eye-tracker-offline.dir
+/home/bijanadmin/git/eye-tracker-offline/CMakeFiles/eye-tracker-offline.dir

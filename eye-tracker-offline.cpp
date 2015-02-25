@@ -58,7 +58,7 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
 int main()
 {
 	// Load video
-	string filename = "test.avi";
+	string filename = "/home/bijanadmin/videos/v1.avi";
 	VideoCapture cap(filename);
 	Mat tmp;
 	cap.grab();
@@ -80,8 +80,8 @@ int main()
 	double fps = cap.get(CV_CAP_PROP_FPS);
 	int dp = 1;
 	int min_dist = sqrt( pow(tmp.rows,2) + pow(tmp.cols,2));
-	int canny_threshold = 15;
-	int center_threshold = 15;
+	int canny_threshold = 10;
+	int center_threshold = 10;
 	int min_radius = 75;
 	int max_radius = 120;
 	Mat window;
@@ -90,9 +90,16 @@ int main()
 	offset[0] = coordinates[0];
 	offset[1] = coordinates[1];
 	namedWindow("window",1);
+	namedWindow("filtered",1);
 	// caputer loop
 	char key = 0;
 	bool refresh = true;
+	
+	VideoWriter demo;
+	int ex = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
+	cout << ex;
+	Size S = Size((int) cap.get(CV_CAP_PROP_FRAME_WIDTH), (int) cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+	demo.open("eye-tracking-demo.avi",ex,30,S,true);
 	for(;;)
 	{
 		//reinitialize
@@ -111,17 +118,20 @@ int main()
 		addWeighted(i1, 0.5, i2, 0.5, 0.0, image);
 		
 		// convert to gray
+		
 		Mat image_gray;
-		//cap.retrieve(image_gray);
-		//image_gray = image_gray(myROI);	
 		image_gray = image(myROI);
 		
 		cvtColor( image_gray, image_gray, CV_BGR2GRAY);
 		
 		// find circle for iris:
 		// Reduce noise so we avoid false circle detection
+		
+
+		//image_gray.convertTo( image_gray, -1, 3, 0);
+		threshold(image_gray, image_gray, 20, 255, THRESH_BINARY);
 		GaussianBlur( image_gray, image_gray, Size(9, 9), 2, 2);
-		image_gray.convertTo( image_gray, -1, 3, 0);
+		
 		vector<Vec3f> circles;
 		
 		//Apply the Hough Transform to find the circles
@@ -139,10 +149,12 @@ int main()
 		circle(image,center,3,Scalar(0,255,0),-1,8,0);
 		// circle outline
 		circle(image,center,radius,Scalar(0,0,255),3,8,0);
-			
-		//}
+		
+		
+		demo.write(image);
 		
 		imshow("window",image);
+		imshow("filtered",image_gray);
 		key = waitKey(30);
 		if(key>=0)
 		{
