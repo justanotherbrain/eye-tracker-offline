@@ -58,7 +58,7 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
 int main()
 {
 	// Load video
-	string filename = "/home/bijanadmin/videos/v1.avi";
+	string filename = "test.avi";
 	VideoCapture cap(filename);
 	Mat tmp;
 	cap.grab();
@@ -83,8 +83,8 @@ int main()
 	int min_dist = 1;
 	int canny_threshold = 10;
 	int center_threshold = 10;
-	int min_radius = 75;
-	int max_radius = 120;
+	int min_radius = 70;
+	int max_radius = 100;
 	Mat window;
 	Rect myROI(coordinates[0],coordinates[1],coordinates[2],coordinates[3]);
 	Vec<float,2> offset;
@@ -130,7 +130,7 @@ int main()
 		
 
 		//image_gray.convertTo( image_gray, -1, 3, 0);
-		threshold(image_gray, image_gray, 20, 255, THRESH_BINARY);
+		threshold(image_gray, image_gray, 21, 255, THRESH_BINARY);
 		GaussianBlur( image_gray, image_gray, Size(9, 9), 2, 2);
 		
 		vector<Vec3f> circles;
