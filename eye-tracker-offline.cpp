@@ -100,7 +100,7 @@ int main()
 	int ex = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
 	cout << ex;
 	Size S = Size((int) cap.get(CV_CAP_PROP_FRAME_WIDTH), (int) cap.get(CV_CAP_PROP_FRAME_HEIGHT));
-	demo.open("eye-tracking-demo.avi",ex,30,S,true);
+	demo.open("eye-tracking-demo.avi",ex,15,S,true);
 	for(;;)
 	{
 		//reinitialize
