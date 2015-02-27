@@ -80,7 +80,7 @@ int main()
 	double fps = cap.get(CV_CAP_PROP_FPS);
 	int dp = 1;
 	//int min_dist = sqrt( pow(tmp.rows,2) + pow(tmp.cols,2));
-	int min_dist = 1;
+	float min_dist = .1;
 	int canny_threshold = 10;
 	int center_threshold = 10;
 	int min_radius = 70;
@@ -122,9 +122,10 @@ int main()
 		
 		Mat image_gray;
 		image_gray = image(myROI);
-		
+
+		//medianBlur(image_gray, image_gray, 75);		
 		cvtColor( image_gray, image_gray, CV_BGR2GRAY);
-		
+		medianBlur(image_gray,image_gray,65);
 		// find circle for iris:
 		// Reduce noise so we avoid false circle detection
 		
@@ -132,7 +133,6 @@ int main()
 		//image_gray.convertTo( image_gray, -1, 3, 0);
 		threshold(image_gray, image_gray, 21, 255, THRESH_BINARY);
 		GaussianBlur( image_gray, image_gray, Size(9, 9), 2, 2);
-		
 		vector<Vec3f> circles;
 		
 		//Apply the Hough Transform to find the circles
@@ -142,25 +142,30 @@ int main()
 		float x=0;
 		float y=0;
 		float r=0;
-		for( size_t i=0; i< circles.size(); i++)
-		{
-			x=x+circles[i][0];
-			y=y+circles[i][1];
-			r=r+circles[i][2];
+		if (circles.size()>0){
+			for( size_t i=0; i< circles.size(); i++)
+			{
+				x=x+circles[i][0];
+				y=y+circles[i][1];
+				r=r+circles[i][2];
+			}
+		
+			float centerX=x/circles.size()+offset[0];
+			float centerY=y/circles.size()+offset[1];
+			//float centerX=circles[0][0]+offset[0];
+			//float centerY=circles[0][1]+offset[1];	
+		
+			Point center(cvRound(centerX), cvRound(centerY));
+			//int radius = cvRound(circles[0][2]);
+			int radius = cvRound(r/circles.size());
+			// circle center
+			circle(image,center,3,Scalar(0,255,0),-1,8,0);
+			// circle outline
+			circle(image,center,radius,Scalar(0,0,255),3,8,0);
 		}
-		float centerX=x/circles.size()+offset[0];
-		float centerY=y/circles.size()+offset[1];
-		//float centerX=circles[0][0]+offset[0];
-		//float centerY=circles[0][1]+offset[1];	
-		
-		Point center(cvRound(centerX), cvRound(centerY));
-		//int radius = cvRound(circles[0][2]);
-		int radius = cvRound(r/circles.size());
-		// circle center
-		circle(image,center,3,Scalar(0,255,0),-1,8,0);
-		// circle outline
-		circle(image,center,radius,Scalar(0,0,255),3,8,0);
-		
+		else{
+			cout << "eye-blink";
+		}	
 		demo.write(image);
 		
 		imshow("window",image);
