@@ -3,6 +3,7 @@
 
 CMakeFiles/eye-tracker-offline.dir/eye-tracker-offline.cpp.o
  /home/bijanadmin/git/eye-tracker-offline/eye-tracker-offline.cpp
+ /usr/local/include/opencv/highgui.h
  /usr/local/include/opencv2/core/core.hpp
  /usr/local/include/opencv2/core/core_c.h
  /usr/local/include/opencv2/core/mat.hpp
